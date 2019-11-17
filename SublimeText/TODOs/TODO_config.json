@@ -1,0 +1,7 @@
+{
+  "pattern": "todo",
+  "done_pattern": "DONE",
+  "fn_identifier": "def",
+  "comment_identifier": "#",
+  "write_file":"TODO.txt"
+}
