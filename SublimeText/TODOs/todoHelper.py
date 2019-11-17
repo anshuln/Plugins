@@ -3,7 +3,7 @@ import sublime_plugin
 import re
 import json
 
-config_path = 'TODO.config'
+config_path = 'TODO_config.json'
 def process(content,pattern='todo',done_pattern='DONE',fn_identifier='def ',comment_identifier='#'):  #TODO read identifier from config
 	function = ''   #TODO make this a stack
 	#TODO add similar for class as well
@@ -34,15 +34,15 @@ def process(content,pattern='todo',done_pattern='DONE',fn_identifier='def ',comm
 
 class TodoCommand(sublime_plugin.TextCommand): 
 	def run(self, edit):   
-		config = json.load(open(config_path,'r'))
+		#config = json.load(open(config_path,'r'))
 		s = self.view.substr(sublime.Region(0,self.view.size()))  
-		TODOs,new_text = process(s,pattern=config['pattern'],done_pattern=config['done_pattern'],fn_identifier=config['fn_identifier'],comment_identifier=config['comment_identifier'])
+		TODOs,new_text = process(s)
 		print(self.view.file_name())
 		currentFolder = "/".join(self.view.file_name().split("/")[:-1])
 		fileName = self.view.file_name().split("/")[-1]
 		new_contents = "In file {} \n---------- \n{} \n==========".format(fileName,"".join(TODOs))
 		try:
-			f = open("{}/{}".format(currentFolder,config["write_file"]),"r")
+			f = open("{}/{}".format(currentFolder,"TODO.txt"),"r")
 			contents = f.read()
 			regex = 'In file {} \n---------- \n[\s\S]*? \n=========='.format(fileName)
 			if re.search(regex,contents) is None:
@@ -53,7 +53,7 @@ class TodoCommand(sublime_plugin.TextCommand):
 		except FileNotFoundError:
 			write_to_file = new_contents
 
-		with open("{}/{}".format(currentFolder,config["write_file"]),"w") as f:
+		with open("{}/{}".format(currentFolder,"TODO.txt"),"w") as f:
 			f.write(write_to_file)
 		self.view.replace(edit,sublime.Region(0,self.view.size()),new_text)
 #TODO have a config file to look at comment delimiters, can do it by language   
